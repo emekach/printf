@@ -21,9 +21,20 @@ int _printf(const char *format, ...)
 	/*Print each character of string*/
 	while (format[i])
 	{
-		value = write(1,&format[i],1);
-		count = count + value;
-		i++;
+		if (format[i] != '%')
+		{
+			value = write(1,&format[i],1);
+			count = count + value;
+			i++;
+			continue;
+		}
+
+		if (format[i] == '%')
+		{
+			printf("I have encountered a percent\n");
+			//kjg
+			break;
+		}
 	}
 
 	return (count);
