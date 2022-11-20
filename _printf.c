@@ -14,6 +14,11 @@ int _printf(const char *format, ...)
 	int count = 0;
 	int value = 0;
 
+	/*Prevent parsing a null pointer*/
+	if (format == NULL)
+		return (-1);
+
+	/*Print each character of string*/
 	while (format[i])
 	{
 		value = write(1,&format[i],1);
