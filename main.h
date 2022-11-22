@@ -1,45 +1,75 @@
-#ifndef PRINT_F
-#define PRINT_F
+#ifndef MAIN_H
+#define MAIN_H
 
-#include <unistd.h>
-#include <stdlib.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stddef.h>
+
+int _printf(const char *format, ...);
+int _putchar(char c);
+int print_string(char *str);
+int print_string_custom(char *str);
+int print_string_reverse(char *str);
+int print_string_rot13(char *str);
+int string_length(char *str);
+int number_digits(unsigned long n, int b);
+int print_number(unsigned long, int base);
+int print_number_upper(unsigned long num, int base);
+int print_decimal(int n);
 
 /**
-* struct convert - defines a structure for symbols and functions
-* @sym: The operator
-* @f: The function associated
-*/
-
-struct convert
+ * struct params - parameters struct
+ *
+ * @plus_flag: + flag
+ * @space_flag: ' ' flag
+ * @hash_flag: # flag
+ * @zero_flag: 0 flag
+ * @minus_flag: - flag
+ * @width: width
+ */
+typedef struct params
 {
-	char *sym;
-	int (*f)(va_list);
-};
-typedef struct convert conver_t;
+	char plus_flag;
+	char space_flag;
+	char hash_flag;
+	char zero_flag;
+	char minus_flag;
+	int width;
+} params_t;
 
-/*Main functions*/
-int parser(const char *format, conver_t f_list[], va_list arg_list);
-int _printf(const char *format, ...);
-int _write_char(char);
-int print_char(va_list);
-int print_string(va_list);
-int print_percent(va_list);
-int print_integer(va_list);
-int print_number(va_list);
-int print_binary(va_list);
-int print_reversed(va_list arg);
-int rot13(va_list);
-int unsigned_integer(va_list);
-int print_octal(va_list list);
-int print_hex(va_list list);
-int print_heX(va_list list);
+/**
+ * struct specifier - format struct
+ *
+ * @c: format character
+ * @f: format function
+ */
+typedef struct specifier
+{
+	char c;
+	int (*f)(va_list, params_t *);
+} spec_t;
 
-/*Helper functions*/
-unsigned int base_len(unsigned int, int);
-char *rev_string(char *);
-void write_base(char *str);
-char *_memcpy(char *dest, char *src, unsigned int n);
-int print_unsgined_number(unsigned int);
+int print_percent(va_list ap, params_t *params);
+int print_c(va_list ap, params_t *params);
+int print_s(va_list ap, params_t *params);
+int print_d(va_list ap, params_t *params);
+int print_b(va_list ap, params_t *params);
+int print_u(va_list ap, params_t *params);
+int print_o(va_list ap, params_t *params);
+int print_x(va_list ap, params_t *params);
+int print_X(va_list ap, params_t *params);
+int print_S(va_list ap, params_t *params);
+int print_p(va_list ap, params_t *params);
+int print_r(va_list ap, params_t *params);
+int print_R(va_list ap, params_t *params);
+
+int is_digit(char c);
+int get_flags(char *s, params_t *params);
+int get_width(char *s, va_list ap, params_t *params);
+int (*get_specifier_func(char c))(va_list, params_t *);
+
+params_t *init_params(void);
+void free_params(params_t *params);
 
 #endif
