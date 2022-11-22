@@ -1,1 +1,5 @@
-0x11. C - printf team project
+# Creating Printf function
+## Collaborators
+
+- Kelly oteri
+- Obinneji chibuzor
