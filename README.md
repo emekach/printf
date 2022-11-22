@@ -1,5 +1,5 @@
 # Creating Printf function
 ## Collaborators
 
-- Kelly oteri
-- Obinneji chibuzor
+- Adewale Fatoki
+- Emeka Chukwuma
