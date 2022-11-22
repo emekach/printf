@@ -1,66 +1,70 @@
 #include "main.h"
 
-void print_buffer(char buffer[], int *buff_ind);
-
 /**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
+ * print_string_slice - print a slice of a string
+ *
+ * @str: string
+ * @a: start index
+ * @b: end index
+ * Return: number of characters printed
  */
-int _printf(const char *format, ...)
+int print_string_slice(char *str, int a, int b)
 {
-	int i, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	int len = b - a;
 
-	if (format == NULL)
-		return (-1);
-
-	va_start(list, format);
-
-	for (i = 0; format && format[i] != '\0'; i++)
+	while (a < b)
 	{
-		if (format[i] != '%')
-		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
-			printed_chars++;
-		}
-		else
-		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
-			++i;
-			printed = handle_print(format, &i, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
-		}
+		_putchar(str[a]);
+		a++;
 	}
-
-	print_buffer(buffer, &buff_ind);
-
-	va_end(list);
-
-	return (printed_chars);
+	return (len);
 }
 
 /**
- * print_buffer - Prints the contents of the buffer if it exist
- * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
+ * _printf - print a formatted string
+ *
+ * @format: the format of the string
+ *
+ * Return: the number of characters printed
  */
-void print_buffer(char buffer[], int *buff_ind)
+int _printf(const char *format, ...)
 {
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
+	int len = 0, i = 0, start_index;
+	va_list ap;
+	char *p = (char *)format;
 
-	*buff_ind = 0;
+	va_start(ap, format);
+
+	if (format == NULL || (format[i] == '%' && format[i + 1] == '\0'))
+		return (-1);
+
+	while (format[i])
+	{
+		if (format[i] == '%')
+		{
+			int (*specifier_func)(va_list, params_t *);
+			params_t *params = init_params();
+
+			start_index = i;
+			i++;
+			i += get_flags((p + i), params);
+			i += get_width((p + i), ap, params);
+
+			specifier_func = get_specifier_func(*(p + i));
+
+			if (specifier_func != NULL)
+			{
+				len += specifier_func(ap, params);
+				i++;
+			}
+			else
+				len += print_string_slice(p, start_index, i);
+			free_params(params);
+			continue;
+		}
+		len += _putchar(format[i]);
+		i++;
+	}
+	va_end(ap);
+	return (len);
 }
